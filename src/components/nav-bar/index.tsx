@@ -8,10 +8,13 @@ export const NavBar = () => {
       <h4 className={style.h4}>Разделы</h4>
       <ul className={style.ul}>
         <Link to="/" className={style.button_link}>
-          Новости
+          Опубликованные статьи
         </Link>
         <Link to="allNews" className={style.button_link}>
           Все новости
+        </Link>
+        <Link to="createNews" className={style.button_link}>
+          Создать статью
         </Link>
       </ul>
     </nav>

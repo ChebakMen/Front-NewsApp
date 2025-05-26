@@ -29,7 +29,7 @@ export const newsApi = api.injectEndpoints({
         method: "GET"
       })
     }),
-    publishNews: builder.mutation<void,{id:string, newsData: FormData}>({
+    publishNews: builder.mutation<void,{id:string, newsData?: FormData}>({
       query: ({newsData,id}) => ({
         url: `/news/published/${id}`,
         method: 'PUT',

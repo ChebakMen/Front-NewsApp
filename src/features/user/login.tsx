@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { useLoginMutation } from "../../app/sevices/userApi"
 
-import {} from "./login.scss"
+import style from "./style.module.scss"
 
 type Login = {
   email: string
@@ -24,6 +24,7 @@ export const Login = () => {
     },
   })
   const [login, { isLoading }] = useLoginMutation()
+  const [error, setError] = useState("")
   const navigate = useNavigate()
 
   const onSubmit = async (data: Login) => {
@@ -35,12 +36,23 @@ export const Login = () => {
         localStorage.setItem("token", token.token)
         navigate("/")
       }
-    } catch (error) {}
+    } catch (error: any) {
+      let errorMessage = ""
+      if (error?.data?.error) {
+        errorMessage = error.data.error
+      } else if (error?.error) {
+        errorMessage = error.error
+      } else if (typeof error === "string") {
+        errorMessage = error
+      }
+
+      setError(errorMessage)
+    }
   }
 
   return (
     <div
-      className="container"
+      className={style.container}
       style={{
         display: "flex",
         alignItems: "center",
@@ -49,12 +61,12 @@ export const Login = () => {
       }}
     >
       <div className="" style={{ display: "flex", flexDirection: "column" }}>
-        <div className="wrapper">
+        <div className={style.wrapper}>
           <div>
             <h1>Войти</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="div_input">
-                <label htmlFor="input_email" className="input_label">
+              <div className={style.div_input}>
+                <label htmlFor="input_email" className={style.label}>
                   Email:
                 </label>
                 <Controller
@@ -66,13 +78,16 @@ export const Login = () => {
                       {...field}
                       id="input_email"
                       type="email"
+                      className={style.input}
                       placeholder="maksim@gmail.com"
                     />
                   )}
                 />
               </div>
-              <div className="div_input">
-                <label htmlFor="input_password">Password:</label>
+              <div className={style.div_input}>
+                <label htmlFor="input_password" className={style.label}>
+                  Пароль:
+                </label>
                 <Controller
                   name="password"
                   control={control}
@@ -82,19 +97,25 @@ export const Login = () => {
                       {...field}
                       id="input_password"
                       type="password"
+                      className={style.input}
                       placeholder="1111"
                     />
                   )}
                 />
               </div>
 
-              <p>
+              <p className={style.p}>
                 Нет аккаунта?{" "}
                 <Link to="/auth/reg" className="">
                   Зарегистрируйтесь
                 </Link>
               </p>
-              <button type="submit" disabled={isLoading}>
+              <p className={style.error}>{error}</p>
+              <button
+                type="submit"
+                className={style.button}
+                disabled={isLoading}
+              >
                 Войти
               </button>
             </form>

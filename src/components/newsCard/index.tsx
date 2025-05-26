@@ -6,7 +6,7 @@ type Props = {
   _id: number | string
   title: string
   text: string
-  userName: string | undefined
+  authorName: string | undefined
   createdAt: string
   imageUrl?: string | undefined
 }
@@ -14,7 +14,7 @@ type Props = {
 export const NewsCard: React.FC<Props> = ({
   _id,
   title,
-  userName,
+  authorName,
   createdAt,
   text,
   imageUrl,
@@ -39,7 +39,7 @@ export const NewsCard: React.FC<Props> = ({
           <h4 className={style.news_text}>{text}</h4>
           <div className={style.buttom_block}>
             <h4 className={style.news_text}>{createdAt}</h4>
-            <h4 className={style.news_textuser}>Автор: {userName}</h4>
+            <h4 className={style.news_textuser}>Автор: {authorName}</h4>
           </div>
         </div>
       </div>

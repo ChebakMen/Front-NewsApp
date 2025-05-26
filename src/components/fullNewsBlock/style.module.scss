@@ -5,7 +5,14 @@ $ffRu: Rubik, sans-serif;
 .news_container {
   border: 1px solid #dedede;
   border-radius: 20px;
-  margin: 0;
+  margin: 15px 0 0;
+
+  position: relative;
+
+  &:hover .buttons {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 .news_image {
@@ -47,9 +54,51 @@ $ffRu: Rubik, sans-serif;
   margin: 10px 0;
 }
 
-.buttom_block {
+.bottom_block {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 40px;
+  justify-content: space-between;
+}
+
+.buttons {
+  opacity: 0;
+  visibility: hidden;
+  border-radius: 10px;
+  display: flex;
+  justify-content: flex-end;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.button {
+  border: 0;
+  padding: 4px 15px;
+  display: flex;
+  align-items: center;
+  color: black;
+  background: rgba(154, 71, 249, 0.2);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease;
+
+  &:hover {
+    svg {
+      fill: white;
+    }
+    background-color: rgba(157, 31, 236, 0.68);
+  }
+
+  &Edit {
+    border-radius: 5px 0 0 5px;
+    border-right: 2px solid black;
+  }
+  &Check {
+    border-radius: 0 5px 5px 0;
+    border-left: 2px solid black;
+  }
 }

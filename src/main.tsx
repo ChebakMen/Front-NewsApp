@@ -5,11 +5,12 @@ import { store } from "./app/store"
 import "./index.css"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Layout } from "./components/layout"
-import { PublishedNews } from "./pages/published-news"
 import { Auth } from "./pages/auth"
 import { Login } from "./features/user/login"
 import { Register } from "./features/user/register"
 import { FullNewsBlock } from "./components/fullNewsBlock"
+import { CreateNews } from "./components/create-news"
+import { BlockNews } from "./components/blockNews"
 
 const container = document.getElementById("root")
 
@@ -34,15 +35,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <PublishedNews />,
+        element: <BlockNews isPublishedNews={true} />,
       },
       {
         path: "allNews",
-        element: <div className="">allNews</div>,
+        element: <BlockNews isPublishedNews={false} />,
       },
       {
         path: "news/:id",
         element: <FullNewsBlock />,
+      },
+      {
+        path: "createNews",
+        element: <CreateNews />,
       },
     ],
   },

@@ -1,14 +1,15 @@
-import React, { useEffect } from "react"
+import trashIcon from "../../img/trash.svg"
+import checkIcon from "../../img/check.svg"
+import editIcon from "../../img/pencil.svg"
 
 import style from "./style.module.scss"
 import { useSelector } from "react-redux"
 import { RootState } from "../../app/store"
 import {
-  deleteNews,
   useDeleteNewsMutation,
   useGetNewsByIdQuery,
+  usePublishNewsMutation,
 } from "../../app/sevices/newsApi"
-import { setNews } from "../../features/news/newsSlice"
 import { useNavigate, useParams } from "react-router-dom"
 
 export const FullNewsBlock = () => {
@@ -19,11 +20,18 @@ export const FullNewsBlock = () => {
   }
 
   const { data: news } = useGetNewsByIdQuery({ id })
+  console.log(news)
   const [deleteNews] = useDeleteNewsMutation()
+  const [publishNews] = usePublishNewsMutation()
   const user = useSelector((state: RootState) => state.auth.user)
   const navigate = useNavigate()
-  const isEditNews = user?._id === news?.authorId
-
+  const isEditNews = user?._id === news?.author._id
+  let isPublished = ""
+  if (news?.isPublished === "true") {
+    isPublished = "Опубликована"
+  } else {
+    isPublished = "Не опубликована"
+  }
   const imageUrl =
     "https://resizer.mail.ru/p/c2631098-aaf3-5a49-934d-dcb15e29355a/AQAKvaSf6g3q55IuLjoTtCsahNWTGl2LTQoonhDwyj7Ynv3-veKTaMiP3yKtrl0WawOk5fP59EXlUXXOoKi-ltIzGTQ.jpg"
 
@@ -39,11 +47,19 @@ export const FullNewsBlock = () => {
 
   const onClickRemoveNews = async (id: string) => {
     try {
-      console.log(id)
       await deleteNews({ id }).unwrap()
       navigate("/")
     } catch (err) {
       console.error("Ошибка при удалении новости:", err)
+    }
+  }
+
+  const onClickPublishNews = async (id: string) => {
+    try {
+      await publishNews({ id }).unwrap()
+      navigate("/")
+    } catch (err) {
+      console.error("Ошибка при публикации новости:", err)
     }
   }
 
@@ -62,21 +78,56 @@ export const FullNewsBlock = () => {
       >
         <div>
           <h2 className={style.news_title}>{news?.title}</h2>
-          <h4 className={style.news_text}>
-            Hey there! 👋 I'm starting a new series called Roast the Code, where
-            I will share some code, and let YOU roast and improve it. There's
-            not much more to it, just be polite and constructive, this is an
-            exercise so we can all learn together. Now then, head over to the
-            repo and roast as hard as you can"
-          </h4>
-          <div className={style.buttom_block}>
-            <h4 className={style.news_text}>{dateConvert(news?.createdAt)}</h4>
-            <h4 className={style.news_textuser}>Автор: {user?.name}</h4>
+          <h4 className={style.news_text}>{news?.text}</h4>
+          <div className={style.bottom_block}>
+            <div
+              className=""
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: "20px",
+              }}
+            >
+              <h4 className={style.news_text}>
+                {dateConvert(news?.createdAt)}
+              </h4>
+              <h4 className={style.news_textuser}>
+                Автор: {news?.author.name}
+              </h4>
+              <h4 className={style.news_text}>Статус: {isPublished}</h4>
+            </div>
             {isEditNews && (
-              <div>
-                <button>Редактировать</button>
-                <button onClick={() => onClickRemoveNews(news?._id)}>
-                  удалить
+              <div className={style.buttons}>
+                <button
+                  className={`${style.buttonEdit} ${style.button}`}
+                  onClick={() => navigate("/createNews")}
+                >
+                  <img
+                    src={editIcon}
+                    alt="Редактировать"
+                    style={{ width: "25px", height: "25px" }}
+                  />
+                </button>
+                <button
+                  className={style.button}
+                  onClick={() => onClickRemoveNews(news?._id)}
+                >
+                  <img
+                    src={trashIcon}
+                    alt="Удалить"
+                    style={{ width: "25px", height: "25px" }}
+                  />
+                </button>
+                <button
+                  className={`${style.buttonCheck} ${style.button}`}
+                  onClick={() => onClickPublishNews(news?._id)}
+                >
+                  <img
+                    src={checkIcon}
+                    alt="Опубликовать"
+                    style={{ width: "25px", height: "25px" }}
+                  />
                 </button>
               </div>
             )}
