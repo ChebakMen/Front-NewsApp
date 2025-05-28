@@ -1,7 +1,8 @@
 import trashIcon from "../../img/trash.svg"
 import checkIcon from "../../img/check.svg"
 import editIcon from "../../img/pencil.svg"
-
+import newsImage from "../../img/newsImage.png"
+import ReactMarkdown from "react-markdown"
 import style from "./style.module.scss"
 import { useSelector } from "react-redux"
 import { RootState } from "../../app/store"
@@ -16,24 +17,28 @@ export const FullNewsBlock = () => {
   const params = useParams<{ id: string }>()
   const id = params.id
   if (!id) {
-    return <div>News ID not found</div>
+    return
   }
 
   const { data: news } = useGetNewsByIdQuery({ id })
-  console.log(news)
   const [deleteNews] = useDeleteNewsMutation()
   const [publishNews] = usePublishNewsMutation()
+
   const user = useSelector((state: RootState) => state.auth.user)
   const navigate = useNavigate()
+
   const isEditNews = user?._id === news?.author._id
   let isPublished = ""
-  if (news?.isPublished === "true") {
+  if (`${news?.isPublished}` === "true") {
     isPublished = "Опубликована"
   } else {
     isPublished = "Не опубликована"
   }
-  const imageUrl =
-    "https://resizer.mail.ru/p/c2631098-aaf3-5a49-934d-dcb15e29355a/AQAKvaSf6g3q55IuLjoTtCsahNWTGl2LTQoonhDwyj7Ynv3-veKTaMiP3yKtrl0WawOk5fP59EXlUXXOoKi-ltIzGTQ.jpg"
+  let imageUrl = newsImage
+  if (news?.imageURL) {
+    console.log(news?.imageURL)
+    imageUrl = news?.imageURL
+  }
 
   const dateConvert = (date: Date | undefined) => {
     if (!date) return ""
@@ -66,7 +71,10 @@ export const FullNewsBlock = () => {
   return (
     <div className={style.news_container}>
       {imageUrl && (
-        <img src={imageUrl} className={style.news_image} alt={news?.title} />
+        <img
+          src={`${import.meta.env.VITE_API_URL}${imageUrl}`}
+          className={style.news_image}
+        />
       )}
       <div
         className={style.news_wrapper}
@@ -78,7 +86,7 @@ export const FullNewsBlock = () => {
       >
         <div>
           <h2 className={style.news_title}>{news?.title}</h2>
-          <h4 className={style.news_text}>{news?.text}</h4>
+          <ReactMarkdown>{news?.text}</ReactMarkdown>
           <div className={style.bottom_block}>
             <div
               className=""
@@ -111,7 +119,7 @@ export const FullNewsBlock = () => {
                 </button>
                 <button
                   className={style.button}
-                  onClick={() => onClickRemoveNews(news?._id)}
+                  onClick={() => onClickRemoveNews(`${news?._id}`)}
                 >
                   <img
                     src={trashIcon}
@@ -119,16 +127,19 @@ export const FullNewsBlock = () => {
                     style={{ width: "25px", height: "25px" }}
                   />
                 </button>
-                <button
-                  className={`${style.buttonCheck} ${style.button}`}
-                  onClick={() => onClickPublishNews(news?._id)}
-                >
-                  <img
-                    src={checkIcon}
-                    alt="Опубликовать"
-                    style={{ width: "25px", height: "25px" }}
-                  />
-                </button>
+
+                {isPublished == "Не опубликована" && (
+                  <button
+                    className={`${style.buttonCheck} ${style.button}`}
+                    onClick={() => onClickPublishNews(`${news?._id}`)}
+                  >
+                    <img
+                      src={checkIcon}
+                      alt="Опубликовать"
+                      style={{ width: "25px", height: "25px" }}
+                    />
+                  </button>
+                )}
               </div>
             )}
           </div>

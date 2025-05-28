@@ -10,6 +10,7 @@ export type News = {
   title: string,
   text:string,
   imageURL?: string,
+  fileURL?: string,
   author: User,
   createdAt: Date,
   updateAt?: Date,

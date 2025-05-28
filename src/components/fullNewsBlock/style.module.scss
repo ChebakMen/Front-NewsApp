@@ -36,15 +36,9 @@ $ffRu: Rubik, sans-serif;
   font-family: $ffUn;
   font-size: 20px;
   margin: 0;
-
-  a {
-    text-decoration: none;
-    color: #000;
-
-    &:hover {
-      color: $blue;
-    }
-  }
+  background-color: #d5e2f5;
+  padding: 10px;
+  border-radius: 15px;
 }
 
 .news_text {
@@ -75,6 +69,7 @@ $ffRu: Rubik, sans-serif;
 .button {
   border: 0;
   padding: 4px 15px;
+
   display: flex;
   align-items: center;
   color: black;
@@ -93,12 +88,13 @@ $ffRu: Rubik, sans-serif;
     background-color: rgba(157, 31, 236, 0.68);
   }
 
-  &Edit {
+  &:first-child {
     border-radius: 5px 0 0 5px;
-    border-right: 2px solid black;
+    border-right: 1px solid rgba(46, 11, 68, 0.68);
   }
-  &Check {
+
+  &:last-child {
     border-radius: 0 5px 5px 0;
-    border-left: 2px solid black;
+    border-left: 1px solid rgba(46, 11, 68, 0.68);
   }
 }

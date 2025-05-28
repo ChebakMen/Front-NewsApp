@@ -47,7 +47,14 @@ export const newsApi = api.injectEndpoints({
         url:`/news/${id}`,
         method: "GET"
       })
-    })
+    }),
+    // addImage: builder.mutation<{ fileUrl: string, imageUrl:string }, {newsData:FormData} >({
+    //   query:({newsData}) => ({
+    //     url:`/upload`,
+    //     method: "POST",
+    //     body: newsData
+    //   })
+    // })
   })
 })
 
@@ -59,7 +66,7 @@ export const {
   useLazyGetAllNewsQuery,
   useDeleteNewsMutation,
   usePublishNewsMutation,
-  useGetNewsByIdQuery
+  useGetNewsByIdQuery,
 } = newsApi
 
 export const {

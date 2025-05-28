@@ -22,7 +22,11 @@ export const NewsCard: React.FC<Props> = ({
   return (
     <div className={style.news_container}>
       {imageUrl && (
-        <img src={imageUrl} className={style.news_image} alt={title} />
+        <img
+          src={`${import.meta.env.VITE_API_URL}${imageUrl}`}
+          className={style.news_image}
+          alt={title}
+        />
       )}
       <div
         className={style.news_wrapper}

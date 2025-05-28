@@ -1,176 +1,328 @@
 import React, { useRef, useState } from "react"
-import {
-  useCreateNewsMutation,
-  useLazyGetAllNewsQuery,
-} from "../../app/sevices/newsApi"
 import { Controller, useForm } from "react-hook-form"
+import { useCreateNewsMutation } from "../../app/sevices/newsApi"
+import ReactMarkdown from "react-markdown"
+import { News } from "../../app/types"
+import style from "./style.module.scss"
+import { useNavigate } from "react-router-dom"
 
-type createNews = {
+type CreateNewsForm = {
   title: string
   text: string
-  file?: File
-  images?: File[]
+  file?: File | null
+  image?: File | null
 }
 
 export const CreateNews = () => {
-  const [createNews] = useCreateNewsMutation()
-  const [trigerAllNews] = useLazyGetAllNewsQuery()
+  const { control, handleSubmit, watch, reset } = useForm<CreateNewsForm>({})
 
-  const { handleSubmit, control, setValue } = useForm<createNews>()
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [selectedImages, setSelectedImages] = useState<File[]>([])
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [dataNewsForCreate, setDataNewsForCreate] = useState<News>({
+    _id: "123",
+    title: "",
+    text: "",
+    author: { _id: "", email: "", password: "", name: "You" },
+    createdAt: new Date(),
+    isPublished: "Не опубликована",
+  })
+
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const imagesInputRef = useRef<HTMLInputElement | null>(null)
+  const imageInputRef = useRef<HTMLInputElement | null>(null)
 
-  const onFileButtonClick = () => {
-    fileInputRef.current?.click()
+  const [createNews] = useCreateNewsMutation()
+  const navigate = useNavigate()
+
+  const updateDataNewsForCreate = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target
+    console.log(name, value)
+    setDataNewsForCreate(prev => ({
+      ...prev,
+      [name]: value,
+    }))
   }
 
-  const onImagesButtonClick = () => {
-    imagesInputRef.current?.click()
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = e.target.files
+      if (file && file.length > 0) {
+        setSelectedFile(file[0])
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
-  const onSubmit = async (data: createNews) => {
+
+  const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = e.target.files
+      if (file && file.length > 0) {
+        setSelectedImage(file[0])
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const onSubmit = async (data: CreateNewsForm) => {
     try {
       const formData = new FormData()
-      console.log(data.title)
-      console.log(data.text)
-
       formData.append("title", data.title)
       formData.append("text", data.text)
 
-      if (data.file) {
-        formData.append("file", data.file)
+      if (selectedFile) {
+        formData.append("file", selectedFile)
+      }
+      if (selectedImage) {
+        formData.append("image", selectedImage)
       }
 
-      if (data.images && data.images.length > 0) {
-        data.images.forEach(image => {
-          formData.append("images", image)
-        })
-      }
       await createNews(formData).unwrap()
-
-      setValue("title", "")
-      setValue("text", "")
-      setSelectedFile(null)
-      setSelectedImages([])
-
-      await trigerAllNews().unwrap()
+      // navigate("/allNews")
+      reset()
     } catch (error) {
       console.error("Ошибка при создании новости:", error)
     }
   }
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-
-    const file = files[0]
-    setSelectedFile(file)
-    setValue("file", file)
+  const handleDeleteFile = () => {
+    setSelectedFile(null)
+  }
+  const handleDeleteImage = () => {
+    setSelectedImage(null)
   }
 
-  const onImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-
-    const filesArray = Array.from(files)
-    setSelectedImages(filesArray)
-    setValue("images", filesArray)
+  const dateConvert = (date: Date | undefined) => {
+    if (!date) return ""
+    const dateObj = typeof date === "string" ? new Date(date) : date
+    return dateObj.toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      style={{ display: "flex", flexDirection: "column" }}
-    >
-      <Controller
-        name="title"
-        control={control}
-        rules={{
-          required: "Обязательное поле",
+    <>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          marginTop: "15px",
         }}
-        render={({ field }) => (
-          <input
-            {...field}
-            placeholder="Заголовок"
-            style={{ width: "30%" }}
-          ></input>
-        )}
-      />
-      <Controller
-        name="text"
-        control={control}
-        rules={{
-          required: "Обязательное поле",
-        }}
-        render={({ field }) => (
-          <textarea
-            {...field}
-            placeholder="О чем думаете?"
-            style={{ width: "50%" }}
-          ></textarea>
-        )}
-      />
-      {selectedFile && (
-        <div>
-          <h4>Выбранный файл:</h4>
-          <p>{selectedFile.name}</p>
-        </div>
-      )}
-      {selectedImages.length > 0 && (
-        <div>
-          <h4>Выбранные картинки:</h4>
-          <div style={{ display: "flex", gap: 10 }}>
-            {selectedImages.map((image, idx) => (
-              <img
-                key={idx}
-                src={URL.createObjectURL(image)}
-                alt={`preview-${idx}`}
-                style={{ width: 100, height: 100, objectFit: "cover" }}
+      >
+        <Controller
+          name="title"
+          control={control}
+          rules={{ required: "Обязательное поле" }}
+          render={({ field, fieldState }) => (
+            <>
+              <input
+                {...field}
+                placeholder="Заголовок"
+                // onChange={updateDataNewsForCreate}
+                style={{ width: "30%" }}
               />
-            ))}
+              {fieldState.error && (
+                <p style={{ color: "red" }}>{fieldState.error.message}</p>
+              )}
+            </>
+          )}
+        />
+
+        <Controller
+          name="text"
+          control={control}
+          rules={{ required: "Обязательное поле" }}
+          render={({ field }) => (
+            <>
+              <textarea
+                {...field} ////// Зачем
+                name="text"
+                placeholder="Ваш текст для статьи"
+                // value={dataNewsForCreate.text}
+                // onChange={updateDataNewsForCreate}
+                rows={10}
+                style={{ width: "100%" }}
+              />
+            </>
+          )}
+        />
+
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <button type="submit" style={{ width: "20%" }}>
+            Добавить новость
+          </button>
+
+          <div>
+            <button type="button" onClick={() => fileInputRef.current?.click()}>
+              Выбрать файл
+            </button>
+            <Controller
+              name="file"
+              control={control}
+              render={() => (
+                <input
+                  type="file"
+                  name="file"
+                  hidden
+                  ref={fileInputRef}
+                  onChange={onFileChange}
+                />
+              )}
+            />
+
+            <button
+              type="button"
+              className={style.button}
+              onClick={() => imageInputRef.current?.click()}
+            >
+              Выбрать картинку
+            </button>
+            <Controller
+              name="image"
+              control={control}
+              render={() => (
+                <input
+                  type="file"
+                  name="image"
+                  hidden
+                  accept="image/*"
+                  ref={imageInputRef}
+                  onChange={onImageChange}
+                />
+              )}
+            />
           </div>
         </div>
-      )}
-      <div className="" style={{ display: "flex", flexDirection: "row" }}>
-        <button type="submit" style={{ width: "20%" }}>
-          Добавить новость
-        </button>
-        <div className="">
-          <button type="button" onClick={onFileButtonClick}>
-            Файл
-          </button>
-          <button type="button" onClick={onImagesButtonClick}>
-            Картинка
-          </button>
+      </form>
+      <div className={style.news_container}>
+        {selectedImage && (
+          <div className="">
+            <img
+              src={URL.createObjectURL(selectedImage)}
+              className={style.news_image}
+            />
+            <button
+              type="button"
+              onClick={handleDeleteImage}
+              style={{ position: "absolute", top: "0", right: "0" }}
+            >
+              X
+            </button>
+          </div>
+        )}
+        <div
+          className={style.news_wrapper}
+          style={
+            selectedImage
+              ? { borderRadius: "0 0 20px 20px", marginTop: "-4px" }
+              : { borderRadius: "20px", marginTop: "0px" }
+          }
+        >
+          <div>
+            <h2 className={style.news_title}>{watch("title")}</h2>
+            <ReactMarkdown>{watch("text")}</ReactMarkdown>
+            <div className={style.bottom_block}>
+              <div
+                className=""
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: "20px",
+                }}
+              >
+                <h4 className={style.news_text}>
+                  {dateConvert(dataNewsForCreate?.createdAt)}
+                </h4>
+                <h4 className={style.news_textuser}>
+                  Автор: {dataNewsForCreate?.author.name}
+                </h4>
+                <h4 className={style.news_text}>
+                  Статус: {dataNewsForCreate?.isPublished}
+                </h4>
+              </div>
+            </div>
+          </div>
         </div>
-        <Controller
-          name="file"
-          control={control}
-          render={({ field }) => (
-            <input
-              type="file"
-              style={{ display: "none" }}
-              ref={fileInputRef}
-              onChange={onFileChange}
-            />
-          )}
-        />
-        <Controller
-          name="images"
-          control={control}
-          render={({ field }) => (
-            <input
-              type="file"
-              style={{ display: "none" }}
-              multiple
-              ref={imagesInputRef}
-              accept="image/*"
-              onChange={onImagesChange}
-            />
-          )}
-        />
+        {selectedFile && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              border: "1px solid #ccc",
+              borderRadius: 15,
+              padding: "8px 12px",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+              backgroundColor: "#fafafa",
+              fontFamily: "Arial, sans-serif",
+              margin: "10px 0",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "#007bff",
+                color: "#fff",
+                fontWeight: "bold",
+                height: "50px",
+                borderRadius: 10,
+                padding: "6px 10px",
+                minWidth: 50,
+                textAlign: "center",
+                marginRight: 15,
+                userSelect: "none",
+              }}
+            ></div>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>
+                <h4
+                  style={{
+                    fontSize: 16,
+                    margin: "4px 0 ",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    flexGrow: 1,
+                  }}
+                >
+                  Выбранный файл:
+                </h4>
+                <a
+                  href={URL.createObjectURL(selectedFile)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontSize: 16,
+                    color: "black",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    flexGrow: 1,
+                  }}
+                >
+                  {selectedFile.name}
+                </a>
+              </div>
+              <button type="button" onClick={handleDeleteFile}>
+                X
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-    </form>
+    </>
   )
 }

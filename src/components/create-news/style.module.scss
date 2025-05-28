@@ -5,17 +5,19 @@ $ffRu: Rubik, sans-serif;
 .news_container {
   border: 1px solid #dedede;
   border-radius: 20px;
-  margin: 15px 0;
+  margin: 15px 0 0;
 
-  &:hover {
-    border: 1px solid $blue;
-    box-shadow: 0 0 0 1px $blue;
+  position: relative;
+
+  &:hover .buttons {
+    opacity: 1;
+    visibility: visible;
   }
 }
 
 .news_image {
   width: 100%;
-  height: 100px;
+  height: 200px;
   object-fit: cover;
   border-radius: 20px 20px 0 0;
 }
@@ -37,15 +39,6 @@ $ffRu: Rubik, sans-serif;
   background-color: #d5e2f5;
   padding: 10px;
   border-radius: 15px;
-
-  a {
-    text-decoration: none;
-    color: #000;
-
-    &:hover {
-      color: $blue;
-    }
-  }
 }
 
 .news_text {
@@ -55,9 +48,9 @@ $ffRu: Rubik, sans-serif;
   margin: 10px 0;
 }
 
-.buttom_block {
+.bottom_block {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 40px;
+  justify-content: space-between;
 }
