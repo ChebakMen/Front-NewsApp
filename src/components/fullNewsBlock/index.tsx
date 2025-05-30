@@ -12,6 +12,7 @@ import {
   usePublishNewsMutation,
 } from "../../app/sevices/newsApi"
 import { useNavigate, useParams } from "react-router-dom"
+import { BASE_URL } from "../../constants"
 
 export const FullNewsBlock = () => {
   const params = useParams<{ id: string }>()
@@ -70,10 +71,13 @@ export const FullNewsBlock = () => {
 
   return (
     <div className={style.news_container}>
-      {imageUrl && (
+      {news?.imageURL ? (
+        <img src={`${imageUrl}`} className={style.news_image} />
+      ) : (
         <img
-          src={`${import.meta.env.VITE_API_URL}${imageUrl}`}
+          src={`${imageUrl}`}
           className={style.news_image}
+          alt={`${imageUrl}`}
         />
       )}
       <div
@@ -145,6 +149,78 @@ export const FullNewsBlock = () => {
           </div>
         </div>
       </div>
+      {/* {news?.fileURL && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            border: "1px solid #ccc",
+            borderRadius: 15,
+            padding: "8px 12px",
+            boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+            backgroundColor: "#fafafa",
+            fontFamily: "Arial, sans-serif",
+            margin: "10px 0",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#007bff",
+              color: "#fff",
+              fontWeight: "bold",
+              height: "50px",
+              borderRadius: 10,
+              padding: "6px 10px",
+              minWidth: 50,
+              textAlign: "center",
+              marginRight: 15,
+              userSelect: "none",
+            }}
+          ></div>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <div>
+              <h4
+                style={{
+                  fontSize: 16,
+                  margin: "4px 0 ",
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  flexGrow: 1,
+                }}
+              >
+                Выбранный файл:
+              </h4>
+              <a
+                href={URL.createObjectURL(selectedFile)}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: 16,
+                  color: "black",
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  flexGrow: 1,
+                }}
+              >
+                {selectedFile.name}
+              </a>
+            </div>
+            <button type="button" onClick={handleDeleteFile}>
+              X
+            </button>
+          </div>
+        </div>
+      )} */}
     </div>
   )
 }

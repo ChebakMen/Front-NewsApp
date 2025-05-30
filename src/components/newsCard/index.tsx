@@ -1,4 +1,5 @@
 import React from "react"
+import newsImage from "../../img/newsImage.png"
 
 import style from "./style.module.scss"
 
@@ -8,7 +9,7 @@ type Props = {
   text: string
   authorName: string | undefined
   createdAt: string
-  imageUrl?: string | undefined
+  imageURL?: string | undefined
 }
 
 export const NewsCard: React.FC<Props> = ({
@@ -17,21 +18,15 @@ export const NewsCard: React.FC<Props> = ({
   authorName,
   createdAt,
   text,
-  imageUrl,
+  imageURL,
 }) => {
   return (
     <div className={style.news_container}>
-      {imageUrl && (
-        <img
-          src={`${import.meta.env.VITE_API_URL}${imageUrl}`}
-          className={style.news_image}
-          alt={title}
-        />
-      )}
+      {imageURL && <img src={`${imageURL}`} className={style.news_image} />}
       <div
         className={style.news_wrapper}
         style={
-          imageUrl
+          imageURL
             ? { borderRadius: "0 0 20px 20px", marginTop: "-4px" }
             : { borderRadius: "20px", marginTop: "0px" }
         }

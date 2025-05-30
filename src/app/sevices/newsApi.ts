@@ -48,13 +48,6 @@ export const newsApi = api.injectEndpoints({
         method: "GET"
       })
     }),
-    // addImage: builder.mutation<{ fileUrl: string, imageUrl:string }, {newsData:FormData} >({
-    //   query:({newsData}) => ({
-    //     url:`/upload`,
-    //     method: "POST",
-    //     body: newsData
-    //   })
-    // })
   })
 })
 

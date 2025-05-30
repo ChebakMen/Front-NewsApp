@@ -16,5 +16,4 @@ export type News = {
   updateAt?: Date,
   isPublished: string,
   publishDate?: Date,
-
 }

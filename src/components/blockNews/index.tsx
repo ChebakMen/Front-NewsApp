@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect } from "react"
 import {
   useGetAllNewsQuery,
   useGetAllPublishedQuery,
@@ -49,7 +49,7 @@ export const BlockNews = ({ isPublishedNews }: Props) => {
                 _id={obj._id}
                 createdAt={dateConvert(obj.createdAt)}
                 authorName={obj.author ? obj.author.name : "Автор не указан"}
-                imageUrl={obj.imageURL ?? ""}
+                imageURL={obj.imageURL ?? ""}
                 title={obj.title}
                 text={obj.text}
               />
@@ -59,9 +59,9 @@ export const BlockNews = ({ isPublishedNews }: Props) => {
               _id={1}
               authorName="Чебыкин Максим Анатольевич"
               title="Новостная статья #1 | Исчезнет, если будут новости"
-              text="Привет👋 , это просто тестовая статья, которая показывает как могут выглядить другие статьи. Мне очень понравилось выполнять это тестовое задание."
-              imageUrl="https://resizer.mail.ru/p/c2631098-aaf3-5a49-934d-dcb15e29355a/AQAKvaSf6g3q55IuLjoTtCsahNWTGl2LTQoonhDwyj7Ynv3-veKTaMiP3yKtrl0WawOk5fP59EXlUXXOoKi-ltIzGTQ.jpg"
+              text="Привет👋 , это просто тестовая статья, которая показывает как могут выглядить другие статьи."
               createdAt={"12 июня 2022 г."}
+              imageURL=""
             />
           )}
         </div>

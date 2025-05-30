@@ -14,7 +14,8 @@ type CreateNewsForm = {
 }
 
 export const CreateNews = () => {
-  const { control, handleSubmit, watch, reset } = useForm<CreateNewsForm>({})
+  const { control, handleSubmit, watch, setValue, reset } =
+    useForm<CreateNewsForm>({})
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
@@ -80,8 +81,13 @@ export const CreateNews = () => {
       }
 
       await createNews(formData).unwrap()
-      // navigate("/allNews")
+      navigate("/allNews")
+
       reset()
+      setValue("file", null)
+      setValue("image", null)
+      setValue("title", "")
+      setValue("text", "")
     } catch (error) {
       console.error("Ошибка при создании новости:", error)
     }
