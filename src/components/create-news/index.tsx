@@ -118,6 +118,7 @@ export const CreateNews = () => {
             <>
               <input
                 {...field}
+                className={style.new_input_title}
                 placeholder="Заголовок"
                 style={{ width: "30%" }}
               />
@@ -137,6 +138,7 @@ export const CreateNews = () => {
               <textarea
                 {...field}
                 name="text"
+                className={style.new_input_text}
                 placeholder="Ваш текст для статьи"
                 rows={10}
                 style={{ width: "100%" }}
@@ -146,12 +148,20 @@ export const CreateNews = () => {
         />
 
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button type="submit" style={{ width: "20%" }}>
+          <button
+            type="submit"
+            className={style.button}
+            style={{ width: "20%" }}
+          >
             Добавить новость
           </button>
 
           <div>
-            <button type="button" onClick={() => fileInputRef.current?.click()}>
+            <button
+              type="button"
+              className={style.button}
+              onClick={() => fileInputRef.current?.click()}
+            >
               Выбрать файл
             </button>
             <Controller
@@ -163,6 +173,7 @@ export const CreateNews = () => {
                   name="file"
                   hidden
                   ref={fileInputRef}
+                  accept=".doc, .docx, .pdf, .gif"
                   onChange={onFileChange}
                 />
               )}
@@ -183,7 +194,7 @@ export const CreateNews = () => {
                   type="file"
                   name="image"
                   hidden
-                  accept="image/*"
+                  accept="image/png, image/jpeg, image/jpeg"
                   ref={imageInputRef}
                   onChange={onImageChange}
                 />
