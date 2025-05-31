@@ -1,18 +1,18 @@
-import trashIcon from "../../img/trash.svg"
-import checkIcon from "../../img/check.svg"
-import editIcon from "../../img/pencil.svg"
-import newsImage from "../../img/newsImage.png"
 import ReactMarkdown from "react-markdown"
 import style from "./style.module.scss"
 import { useSelector } from "react-redux"
 import { RootState } from "../../app/store"
+import { useNavigate, useParams } from "react-router-dom"
 import {
   useDeleteNewsMutation,
   useGetNewsByIdQuery,
   usePublishNewsMutation,
 } from "../../app/sevices/newsApi"
-import { useNavigate, useParams } from "react-router-dom"
-import { BASE_URL } from "../../constants"
+
+import trashIcon from "../../img/trash.svg"
+import checkIcon from "../../img/check.svg"
+import editIcon from "../../img/pencil.svg"
+import newsImage from "../../img/newsImage.png"
 
 export const FullNewsBlock = () => {
   const params = useParams<{ id: string }>()
@@ -37,7 +37,6 @@ export const FullNewsBlock = () => {
   }
   let imageUrl = newsImage
   if (news?.imageURL) {
-    console.log(news?.imageURL)
     imageUrl = news?.imageURL
   }
 
@@ -89,8 +88,21 @@ export const FullNewsBlock = () => {
         }
       >
         <div>
-          <h2 className={style.news_title}>{news?.title}</h2>
-          <ReactMarkdown>{news?.text}</ReactMarkdown>
+          {news?.title ? (
+            <h2 className={style.news_title}>{news?.title}</h2>
+          ) : (
+            <h2 className={style.news_title}>
+              Новостная статья #1 | Исчезнет, если будут новости
+            </h2>
+          )}
+          {news?.text ? (
+            <ReactMarkdown>{news?.text}</ReactMarkdown>
+          ) : (
+            <h4 className={style.news_text}>
+              Привет👋 , это просто тестовая статья, которая показывает как
+              могут выглядить другие статьи.
+            </h4>
+          )}
           <div className={style.bottom_block}>
             <div
               className=""
@@ -101,12 +113,20 @@ export const FullNewsBlock = () => {
                 gap: "20px",
               }}
             >
-              <h4 className={style.news_text}>
-                {dateConvert(news?.createdAt)}
-              </h4>
-              <h4 className={style.news_textuser}>
-                Автор: {news?.author.name}
-              </h4>
+              {news?.createdAt ? (
+                <h4 className={style.news_text}>
+                  {dateConvert(news?.createdAt)}
+                </h4>
+              ) : (
+                <h4 className={style.news_text}>25 мая 2025г</h4>
+              )}
+              {news?.author.name ? (
+                <h4 className={style.news_textuser}>
+                  Автор: {news?.author.name}
+                </h4>
+              ) : (
+                <h4 className={style.news_textuser}>Автор: User229</h4>
+              )}
               <h4 className={style.news_text}>Статус: {isPublished}</h4>
             </div>
             {isEditNews && (
@@ -149,18 +169,18 @@ export const FullNewsBlock = () => {
           </div>
         </div>
       </div>
-      {/* {news?.fileURL && (
+      {news?.fileURL && (
         <div
           style={{
             display: "flex",
             alignItems: "center",
             border: "1px solid #ccc",
             borderRadius: 15,
-            padding: "8px 12px",
+            padding: "8px 10px",
             boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
             backgroundColor: "#fafafa",
             fontFamily: "Arial, sans-serif",
-            margin: "10px 0",
+            margin: "10px 0 0",
           }}
         >
           <div
@@ -170,10 +190,10 @@ export const FullNewsBlock = () => {
               fontWeight: "bold",
               height: "50px",
               borderRadius: 10,
-              padding: "6px 10px",
-              minWidth: 50,
+              padding: "6px 3px",
+              width: "5px",
               textAlign: "center",
-              marginRight: 15,
+              marginRight: 20,
               userSelect: "none",
             }}
           ></div>
@@ -196,10 +216,10 @@ export const FullNewsBlock = () => {
                   flexGrow: 1,
                 }}
               >
-                Выбранный файл:
+                Файл:
               </h4>
               <a
-                href={URL.createObjectURL(selectedFile)}
+                href={news.fileURL}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -212,15 +232,12 @@ export const FullNewsBlock = () => {
                   flexGrow: 1,
                 }}
               >
-                {selectedFile.name}
+                {news.fileURL.split(":")[2]}
               </a>
             </div>
-            <button type="button" onClick={handleDeleteFile}>
-              X
-            </button>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   )
 }

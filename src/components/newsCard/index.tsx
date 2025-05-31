@@ -1,5 +1,4 @@
 import React from "react"
-import newsImage from "../../img/newsImage.png"
 
 import style from "./style.module.scss"
 

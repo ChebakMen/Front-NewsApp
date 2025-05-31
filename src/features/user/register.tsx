@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { useRegisterMutation } from "../../app/sevices/userApi"
@@ -10,11 +10,7 @@ type Register = {
 }
 
 export const Register = () => {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<Register>({
+  const { handleSubmit, control } = useForm<Register>({
     mode: "onChange",
     reValidateMode: "onBlur",
     defaultValues: {

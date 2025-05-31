@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { useLoginMutation } from "../../app/sevices/userApi"
@@ -11,11 +11,7 @@ type Login = {
 }
 
 export const Login = () => {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<Login>({
+  const { handleSubmit, control } = useForm<Login>({
     mode: "onChange",
     reValidateMode: "onBlur",
     defaultValues: {

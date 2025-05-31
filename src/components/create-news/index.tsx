@@ -19,7 +19,7 @@ export const CreateNews = () => {
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
-  const [dataNewsForCreate, setDataNewsForCreate] = useState<News>({
+  const [dataNewsForCreate] = useState<News>({
     _id: "123",
     title: "",
     text: "",
@@ -33,17 +33,6 @@ export const CreateNews = () => {
 
   const [createNews] = useCreateNewsMutation()
   const navigate = useNavigate()
-
-  const updateDataNewsForCreate = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target
-    console.log(name, value)
-    setDataNewsForCreate(prev => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -130,7 +119,6 @@ export const CreateNews = () => {
               <input
                 {...field}
                 placeholder="Заголовок"
-                // onChange={updateDataNewsForCreate}
                 style={{ width: "30%" }}
               />
               {fieldState.error && (
@@ -147,11 +135,9 @@ export const CreateNews = () => {
           render={({ field }) => (
             <>
               <textarea
-                {...field} ////// Зачем
+                {...field}
                 name="text"
                 placeholder="Ваш текст для статьи"
-                // value={dataNewsForCreate.text}
-                // onChange={updateDataNewsForCreate}
                 rows={10}
                 style={{ width: "100%" }}
               />
