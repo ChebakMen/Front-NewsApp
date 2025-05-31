@@ -58,6 +58,13 @@ export const CreateNews = () => {
 
   const onSubmit = async (data: CreateNewsForm) => {
     try {
+      const btn_submit = document.getElementById(
+        "btn_submit",
+      ) as HTMLButtonElement | null
+      if (btn_submit) {
+        btn_submit.disabled = true
+      }
+
       const formData = new FormData()
       formData.append("title", data.title)
       formData.append("text", data.text)
@@ -150,6 +157,7 @@ export const CreateNews = () => {
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <button
             type="submit"
+            id="btn_submit"
             className={style.button}
             style={{ width: "20%" }}
           >
