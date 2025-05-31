@@ -1,4 +1,5 @@
 import React from "react"
+import ReactMarkdown from "react-markdown"
 
 import style from "./style.module.scss"
 
@@ -34,7 +35,9 @@ export const NewsCard: React.FC<Props> = ({
           <h2 className={style.news_title}>
             <a href={`/news/${_id}`}>{title}</a>
           </h2>
-          <h4 className={style.news_text}>{text}</h4>
+          <h4 className={style.news_text}>
+            <ReactMarkdown>{text}</ReactMarkdown>
+          </h4>
           <div className={style.buttom_block}>
             <h4 className={style.news_text}>{createdAt}</h4>
             <h4 className={style.news_textuser}>Автор: {authorName}</h4>
